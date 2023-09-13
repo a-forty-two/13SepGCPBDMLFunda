@@ -1,0 +1,257 @@
+In this lab activity, you’ll choose 2 from a set of provided use cases and think about the problems from an ML perspective. 
+Pick two use cases that you are familiar with from the two slides that follow: Cast this as an ML problem. What is being predicted? What data is needed? Cast the ML problem as a software problem. What is the API for the problem during prediction? Who will use this service? How are they doing it today? Now, cast it in the framework of a data problem. What are some key actions to collect, analyze, predict, and react to the data/predictions (different input features might require different actions) 
+
+
+
+
+
+
+Let’s say you are an analyst at a bank. Your model has rejected a loan application, and your bank has asked you to tell why the application is rejected. What model property do you look for?
+A) Traceability
+
+B) Adaptability 
+
+C) Explainability 
+
+D) Visualizations
+
+Ans: C-> local feature importance could help identify the top features due to which application was rejected
+
+
+
+
+https://www.youtube.com/watch?v=qTUUwfG1vSs
+
+
+https://pair-code.github.io/lit/
+
+
+AUC ROC- 
+
+Care equally about all classes -> AUC ROC
+
+Sourav chakravarti to Everyone (6 Sep 2023, 9:40 AM)
+receiver operating criterion
+
+Ankit Singh to Everyone (6 Sep 2023, 9:41 AM)
+it basically give the performance graph  at different threshold for a classsifcation model
+
+———
+
+
+Severe imbalance in data-> one class is overrepresented; other class(es) are underrepresented 
+	- F1 Score 
+
+
+———
+
+Entropy:
+1. Binary cross entropy
+2. Categorical cross-entropy
+3. Sparse Categorical Cross Entropy 
+
+
+
+————
+In order to clean the data: 
+1. If data is in warehouse (BQ)- perform feature engineering there itself
+
+2. If data is at rest or motion anywhere except #1 - use DataFlow
+
+DataFlow-> 
+
+
+
+
+
+
+
+
+Big data-> data too big for 1 machine 
+
+Size of 1 machine= 2 numbers
+
+1,2,3 
+OLTP- Online transactional processes
+M1 -   1,2						M2 -> 3
+M3 -   1,2						M4 -> 3
+
+SUM = M1 ( 1+2) + M2 (3) = M1 (3) + M2(3) = 6
+C++/Py/Java/JS/.net….. (Imperative)
+
+3 numbers- 4 machines???
+
+SHARDING 
+OLAP- Online Analytical Processes
+M1: 1,2				M2: 2,3				M3: 3, 1
+SUM = M1(1+2) + M2 (2+3) + M3(3+1)
+				= M1(3) + M2(5) + M3(4)
+			  =  12
+1+2+3 = 12
+YOU TELL THE PRODUCT WHAT TO DO 
+	- that product figures out HOW TO DO
+			-> Map Reduce 
+
+Spark, Hadoop, Beam, AirFlow, TensorFlow, DialogFlow, … flow…. -> We write programs to build a logical EXECUTION GRAPH!-> tells the computer WHAT to do
+			-> this graph is executed after OPTIMIZATIONS!
+
+Declarative - PySpark, Scala, R, SQL…..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Data
+
+If not sure; unstructured -> GCS 
+
+Transactional (EDITING the data/ poor perf on searching)
+	- SQL
+				- regional-> 1 W, N R -> Cloud SQL (VMs that manage one of 3 products for you- MS SQL, MySQL, PostgreSQL)
+								-> most apps; transactions; (REGIONALS)
+				- global-> N W/R -> Cloud Spanner 
+	- NoSQL
+				- Firestore -> daily free quota; BSON;
+								-> cat /sub-cats in my e-commerce 
+								-> Web and Mobile APIs; offline mobile DB
+Analytical (SEARCHING the data/ poor perf on editing)
+	- SQL - BigQuery (GB to TB)-> ~ 300ms latency-> DA/ML 
+	- NoSQL- BigTable (TB to PB+)-> ~10ms latency-> REAL TIME ML
+									-> GMAIL and Google Analytics 
+
+
+
+
+Apache HBase ~~~ Big Table 
+Apache Hive ~~~~ BigQuery 
+Apache AirFlow ~~~~ Composer
+Apache Beam 		~~~~ DataFlow 
+Apache Spark/Hadoop ~~~~ DataProc 
+
+GCS Use Cases:
+1. Object storage-> just dump everything 
+2. Backup and archive 
+3. Website (static)
+4. Data Lake for Hadoop Compliant storages
+            1. Copy paste all Hadoop data into GCS with same nomenclature
+            2. Programs-> hdfs:// —> gs://
+5. CDN - content delivery network EDGE 
+                        1. Next time-> web server sends only HTML
+                            1. CSS/JS/multimedia-> all comes from CDN at a cheaper price!
+
+Data in Motion-> Pub/Sub 
+Data in Apache -> DataProc 
+No Code module-> DataFusion
+Happy with code (Py/Java) -> DataFlow 
+Or use command line utilities (gsutil), online data transfer, appliances
+
+
+
+
+
+
+PUB/SUB———> DataFlow (ETL) ———> BQ/GCS/BT
+
+PUB/SUB- Topics+Subscriptions
+					- it cannot take care of later arrival of data or windowing or time-stamp fixing!
+
+We use DataFlow to fix the problems above!
+
+DataFlow-> Python and Java
+
+
+3 Types of data movements:
+
+1. Extract-Load : From a database to Looker, from GCS to BQ
+                1. When data is clean and ready to use
+2. Extract-Transform-Load: Extract— make the changes— and save somewhere else
+                1. When you know exactly how to transform the dirty data
+                2. CSV and JSON-> extract them from GCS; then combine them and clean them removing missing values in DataFlow—> write into BigQuery 
+        1. Challenge-> Data Scientist, Data Analyst, Data Engineers, HR Managers, Team Leads-> all of them need the employee dataset of their purposed
+            1. DOES this mean that I will now need to build 5 different architectures- one for each mission?
+3. ELT-> extract load transform-> extract from everywhere (pub/sub), dump into a data lake (GCS) and then keep transforming all you want!
+                1. Data Scientist-> Vertex AI Dataset
+                2. Data Analyst-> will read it into Looker
+                3. Data Engineer-> will build a DataFlow pipeline from GCS to BQ
+                4. Data Analyst-> will read from BQ and dashboard on Looker for HRs and Team Leads 
+
+
+
+ML:
+Parameters-> in y=mx+c; m and c are parameters;
+				we call them weights and bias 
+
+Hyperparameters-> all the other adjustments that we need to do from our end
+		-> how long to train?
+			-> how many layers to take?
+		-> learning rate?
+
+EDA or Exploratory Data Analysis -> decide which features to select
+		-> BigQuery, Vertex AI Workbench (Jupyter notebooks)
+
+
+
+Cities -> BLR, NYC, LON, MUM 
+
+Sales data from 4 cities
+
+
+ML model_> graph theory-> only numbers can be plotted on a graph!
+
+BLR -> 1, NYC->2 , LON->3, MUM->4 
+
+If we try to build a mathematical equation from this-> 
+			NYC - LON = -1? MUM > BLR???
+
+ONE-HOT ENCODING:
+
+City-> City_B, CITY_N, City_L, city_m
+			present-> 1, absent-> 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
